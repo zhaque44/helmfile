@@ -327,7 +327,7 @@ func Test_SyncRelease(t *testing.T) {
 	var buffer bytes.Buffer
 	logger := NewLogger(&buffer, "debug")
 	helm := MockExecer(logger, "config", "dev")
-	err := helm.SyncRelease(HelmContext{}, "release", "chart", "--timeout 10", "--wait", "--wait-for-jobs")
+	err := helm.SyncRelease(HelmContext{}, "release", "chart", "default", "--timeout 10", "--wait", "--wait-for-jobs")
 	expected := `Upgrading release=release, chart=chart
 exec: helm --kubeconfig config --kube-context dev upgrade --install release chart --timeout 10 --wait --wait-for-jobs --history-max 0
 `
