@@ -272,7 +272,11 @@ func (helm *execer) UpdateDeps(chart string) error {
 }
 
 func (helm *execer) SyncRelease(context HelmContext, name, chart, namespace string, flags ...string) error {
-	helm.logger.Infof("Upgrading release=%v, chart=%v", name, redactedURL(chart))
+	releaseNamespace := "default"
+	if namespace != "" {
+		releaseNamespace = namespace
+	}
+	helm.logger.Infof("Upgrading release=%v, chart=%v, namespace=%v", name, redactedURL(chart), releaseNamespace)
 	preArgs := make([]string, 0)
 	env := make(map[string]string)
 
@@ -451,10 +455,15 @@ func (helm *execer) TemplateRelease(name string, chart string, flags ...string) 
 }
 
 func (helm *execer) DiffRelease(context HelmContext, name, chart, namespace string, suppressDiff bool, flags ...string) error {
+	releaseNamespace := "default"
+	if namespace != "" {
+		releaseNamespace = namespace
+	}
+	msg := fmt.Sprintf("Comparing release=%v, chart=%v, namespace=%v", name, redactedURL(chart), releaseNamespace)
 	if context.Writer != nil {
-		fmt.Fprintf(context.Writer, "Comparing release=%v, chart=%v\n", name, redactedURL(chart))
+		fmt.Fprint(context.Writer, msg)
 	} else {
-		helm.logger.Infof("Comparing release=%v, chart=%v", name, redactedURL(chart))
+		helm.logger.Info(msg)
 	}
 	preArgs := make([]string, 0)
 	env := make(map[string]string)
